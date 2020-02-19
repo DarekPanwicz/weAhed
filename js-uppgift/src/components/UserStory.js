@@ -7,23 +7,85 @@ export default class UserStory extends Component {
     dateFrom: "",
     dateTo: "",
     chargeable: null,
-    description: ""
+    description: "",
+    reportedTime: []
   };
 
   submitHandler = e => {
     e.preventDefault();
-    console.log("works dude");
+    console.log("state Reported Time", this.state.reportedTime);
+
+    this.state.reportedTime.push(
+      this.state.project,
+      this.state.activity,
+      this.state.dateFrom,
+      this.state.dateTo,
+      this.state.chargeable,
+      this.state.description
+    );
+  };
+
+  projectHandler = e => {
+    //console.log("Value", e.target.value)
+    this.setState({
+      project: e.target.value
+    });
+  };
+
+  activityHandler = e => {
+    this.setState({
+      activity: e.target.value
+    });
+  };
+
+  dateFromHandler = e => {
+    this.setState({
+      dateFrom: e.target.value
+    });
+  };
+
+  dateToHandler = e => {
+    this.setState({
+      dateTo: e.target.value
+    });
+  };
+
+  chargeableHandler = e => {
+    this.setState({
+      chargeable: !this.state.chargeable
+    });
+  };
+
+  descriptionHandler = e => {
+    this.setState({
+      description: e.target.value
+    });
   };
 
   render() {
-    const {
-      project,
-      activity,
-      dateFrom,
-      dateTo,
-      chargeable,
-      description
-    } = this.state;
+    const { reportedTime } = this.state;
+
+    const time = true ? (
+      reportedTime.map(userBoking => {
+        const key = Math.floor(Math.random() * Math.floor(10000000));
+
+        return (
+          <>
+            <tr key={key}>
+              <td>{userBoking}</td>
+              <td>
+                <button>Redigera</button>
+              </td>
+              <td>
+                <button>Radera</button>
+              </td>
+            </tr>
+          </>
+        );
+      })
+    ) : (
+      <div> List is empty :) </div>
+    );
 
     return (
       <div>
@@ -51,43 +113,67 @@ export default class UserStory extends Component {
           <div className="col-left">
             <label>
               Projekt
-              <select name="project">
+              <select name="project" onChange={this.projectHandler}>
                 <option value>Var god välj ett projekt...</option>
-                <option name="project" value="project1" onChange={project}>
+                <option name="project 1" value="project1">
                   Projekt 1
                 </option>
-                <option value="project2">Projekt 2</option>
-                <option value="project3">Projekt 3</option>
+                <option name="project 2" value="project2">
+                  Projekt 2
+                </option>
+                <option name="project 3" value="project3">
+                  Projekt 3
+                </option>
               </select>
             </label>
             <label>
               Aktivitet
-              <select name="activity">
+              <select name="activity" onChange={this.activityHandler}>
                 <option value>Var god välj en aktivitet...</option>
-                <option value="activity1">Aktivitet 1</option>
-                <option value="activity2">Aktivitet 2</option>
-                <option value="activity3">Aktivitet 3</option>
+                <option name="activity 1" value="activity1">
+                  Aktivitet 1
+                </option>
+                <option name="activity 2" value="activity2">
+                  Aktivitet 2
+                </option>
+                <option name="activity 3" value="activity3">
+                  Aktivitet 3
+                </option>
               </select>
             </label>
             <div className="pair">
               <label className="pair-left">
                 Från
-                <input type="text" name="from" />
+                <input
+                  type="text"
+                  name="from"
+                  onChange={this.dateFromHandler}
+                />
               </label>
               <label className="pair-right">
                 Till
-                <input type="text" name="to" />
+                <input type="text" name="to" onChange={this.dateToHandler} />
               </label>
             </div>
             <label className="checkbox">
               <span>Debiterbar</span>
-              <input type="checkbox" name="billable" />
+              <input
+                type="checkbox"
+                name="billable"
+                onChange={this.chargeableHandler}
+              />
             </label>
           </div>
           <div className="col-right">
             <label>
               Anteckning
-              <textarea name="note" cols={30} rows={10} defaultValue={""} />
+              <textarea
+                name="note"
+                cols={30}
+                rows={10}
+                defaultValue={""}
+                onChange={this.descriptionHandler}
+              />
             </label>
             <button type="submit">Spara</button>
           </div>
@@ -123,6 +209,7 @@ export default class UserStory extends Component {
                 <button>Radera</button>
               </td>
             </tr>
+            {time}
           </tbody>
         </table>
       </div>
