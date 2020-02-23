@@ -2,31 +2,53 @@ import React, { Component } from "react";
 
 export default class UserStory extends Component {
   state = {
+    id: "",
     project: "",
     activity: "",
     dateFrom: "",
     dateTo: "",
     chargeable: null,
+    edit: false,
+    delete: false,
+    deleteId: "",
     description: "",
     reportedTime: []
   };
 
   submitHandler = e => {
     e.preventDefault();
-    console.log("state Reported Time", this.state.reportedTime);
 
-    this.state.reportedTime.push(
-      this.state.project,
-      this.state.activity,
-      this.state.dateFrom,
-      this.state.dateTo,
-      this.state.chargeable,
-      this.state.description
-    );
+    if (!this.state.edit) {
+      const max = 95995995959595;
+      const id = Math.floor(Math.random() * Math.floor(max));
+      const {
+        project,
+        activity,
+        dateFrom,
+        dateTo,
+        chargeable,
+        description
+      } = this.state;
+      this.setState({
+        reportedTime: [
+          ...this.state.reportedTime,
+          [id, project, activity, dateFrom, dateTo, chargeable, description]
+        ],
+        id: "",
+        project: "",
+        activity: "",
+        dateFrom: "",
+        dateTo: "",
+        chargeable: null,
+        description: ""
+      });
+
+      e.target.reset();
+    } else {
+    }
   };
 
   projectHandler = e => {
-    //console.log("Value", e.target.value)
     this.setState({
       project: e.target.value
     });
@@ -62,30 +84,81 @@ export default class UserStory extends Component {
     });
   };
 
+  askAboutDeletingTime = e => {
+    this.setState({
+      delete: true,
+      deleteId: e[0]
+    });
+  };
+  deleteHandler = e => {
+    const id = this.state.deleteId;
+    this.setState({
+      delete: false,
+      reportedTime: this.state.reportedTime.filter(function(bookning) {
+        return bookning[0] !== id;
+      })
+    });
+  };
+
   render() {
+    const styleBtn = {
+      height: "40px",
+      width: "100px",
+      color: "white",
+      fontSize: "25px",
+      backgroundColor: "black",
+      margin: "0 10px"
+    };
+
     const { reportedTime } = this.state;
 
-    const time = true ? (
-      reportedTime.map(userBoking => {
-        const key = Math.floor(Math.random() * Math.floor(10000000));
+    const bookning =
+      this.state.reportedTime.length > 0 ? (
+        reportedTime.map(userBoking => {
+          return (
+            <>
+              <tr key={userBoking.id}>
+                <td>{userBoking[1]}</td>
+                <td>{userBoking[2]}</td>
+                <td>{userBoking[3]}</td>
+                <td>{userBoking[4]}</td>
+                <td>{userBoking[6]}</td>
 
-        return (
-          <>
-            <tr key={key}>
-              <td>{userBoking}</td>
-              <td>
-                <button>Redigera</button>
-              </td>
-              <td>
-                <button>Radera</button>
-              </td>
-            </tr>
-          </>
-        );
-      })
-    ) : (
-      <div> List is empty :) </div>
-    );
+                <td>
+                  <button
+                    onClick={() => {
+                      this.setState({
+                        id: userBoking[0],
+                        project: userBoking[1],
+                        activity: userBoking[2],
+                        dateFrom: userBoking[3],
+                        dateTo: userBoking[4],
+                        chargeable: userBoking[5],
+                        description: userBoking[6],
+                        edit: true,
+                        reportedTime: [...reportedTime]
+                      });
+                    }}
+                  >
+                    Redigera
+                  </button>
+                </td>
+                <td>
+                  <button
+                    onClick={() => {
+                      this.askAboutDeletingTime(userBoking);
+                    }}
+                  >
+                    Radera
+                  </button>
+                </td>
+              </tr>
+            </>
+          );
+        })
+      ) : (
+        <div> Det finns inga bokningar :) </div>
+      );
 
     return (
       <div>
@@ -113,7 +186,11 @@ export default class UserStory extends Component {
           <div className="col-left">
             <label>
               Projekt
-              <select name="project" onChange={this.projectHandler}>
+              <select
+                name="project"
+                value={this.state.project}
+                onChange={this.projectHandler}
+              >
                 <option value>Var god välj ett projekt...</option>
                 <option name="project 1" value="project1">
                   Projekt 1
@@ -128,7 +205,11 @@ export default class UserStory extends Component {
             </label>
             <label>
               Aktivitet
-              <select name="activity" onChange={this.activityHandler}>
+              <select
+                name="activity"
+                value={this.state.activity}
+                onChange={this.activityHandler}
+              >
                 <option value>Var god välj en aktivitet...</option>
                 <option name="activity 1" value="activity1">
                   Aktivitet 1
@@ -147,12 +228,18 @@ export default class UserStory extends Component {
                 <input
                   type="text"
                   name="from"
+                  value={this.state.dateFrom}
                   onChange={this.dateFromHandler}
                 />
               </label>
               <label className="pair-right">
                 Till
-                <input type="text" name="to" onChange={this.dateToHandler} />
+                <input
+                  type="text"
+                  name="to"
+                  value={this.state.dateTo}
+                  onChange={this.dateToHandler}
+                />
               </label>
             </div>
             <label className="checkbox">
@@ -171,15 +258,40 @@ export default class UserStory extends Component {
                 name="note"
                 cols={30}
                 rows={10}
-                defaultValue={""}
+                defaultValue={this.state.description}
                 onChange={this.descriptionHandler}
               />
             </label>
             <button type="submit">Spara</button>
           </div>
         </form>
+
+        {this.state.delete ? (
+          <div>
+            <p style={{ fontSize: "30px", color: "red" }}>
+              Vill du verkligen ta bort tid ?
+            </p>
+            <button onClick={this.deleteHandler} style={styleBtn}>
+              {" "}
+              Ja{" "}
+            </button>
+            <button
+              onClick={() => {
+                this.setState({
+                  delete: false
+                });
+              }}
+              style={styleBtn}
+            >
+              {" "}
+              Nej{" "}
+            </button>
+          </div>
+        ) : null}
+
         <table>
           <caption>Rapporterad tid</caption>
+
           <thead>
             <tr>
               <th>Projekt</th>
@@ -195,22 +307,7 @@ export default class UserStory extends Component {
               <td colSpan={7}>Summa total tid: 8:00</td>
             </tr>
           </tfoot>
-          <tbody>
-            <tr>
-              <td>Lorem ipsum</td>
-              <td>Fusce</td>
-              <td>9:00</td>
-              <td>17:00</td>
-              <td>Proin vel iaculis diam.</td>
-              <td>
-                <button>Redigera</button>
-              </td>
-              <td>
-                <button>Radera</button>
-              </td>
-            </tr>
-            {time}
-          </tbody>
+          <tbody>{bookning}</tbody>
         </table>
       </div>
     );
