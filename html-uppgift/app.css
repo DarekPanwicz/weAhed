@@ -1,5 +1,5 @@
 body {
-    font-family: 'Lato',sans-serif;
+    font-family: 'Lato', sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -11,8 +11,8 @@ body {
 }
 
 .header img {
-    width: 200px;
-    margin-top: 50px;
+    width: 160px;
+    margin-top: 40px;
 }
 
 .header {
@@ -20,6 +20,34 @@ body {
     display: block;
     display: flex;
     justify-content: center;
+}
+
+.profileMenu {
+    position: absolute;
+    right: 40px;
+    top: 30px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.profileMenu .triangle {
+
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgb(0, 0, 0);
+    margin-right: 4px;
+}
+
+.img img {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    position: relative;
+    top: 8px;
+    left: 8px;
 }
 
 nav {
@@ -37,7 +65,34 @@ nav ul {
 
 nav ul li {
     margin-right: 30px;
-    color: rgba(128, 128, 128, 0.541)
+    color: #BDBBBB;
+    font-weight: 400;
+}
+
+nav ul .active {
+    color: #4A90E2;
+    font-weight: 700;
+}
+
+nav ul .active .dot {
+    background-color: #4A90E2;
+    height: 6px;
+    width: 10px;
+    border-radius: 5px;
+    margin: auto;
+    position: relative;
+    border-radius: 50%;
+    top: 20px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+.icons {
+    height: 20px;
+    width: 20px;
+    position: relative;
+    top: 2px;
+    right: 10px
 }
 
 .bgColor {
@@ -49,7 +104,7 @@ nav ul li {
 }
 
 .title {
-    font-size: 1.3rem;
+    font-size: 1.6rem;
     padding-top: 50px;
     font-weight: 700;
 }
@@ -57,7 +112,7 @@ nav ul li {
 .line {
     background-color: rgba(0, 0, 0, 0.205);
     height: 2px;
-    width: 600px;
+    width: 690px;
     margin-top: 10px;
     margin-bottom: 20px;
 }
@@ -84,11 +139,17 @@ nav ul li {
 
 .sectionRight {
     width: 40%;
-    background-color: rgb(28, 172, 255)
+    background-color: #4A90E2
+}
+
+.far {
+    height: 20px;
+    width: 20px;
+    font-size: 40px;
 }
 
 .sectionBig {
-    margin-top: 50px;
+    margin-top: 30px;
     background-color: white;
     height: 300px;
     border-radius: 2%;
@@ -98,17 +159,17 @@ nav ul li {
 }
 
 footer .footer {
- background-color: rgb(28, 172, 255);
- position: fixed;
- right: 30px;
- bottom: 0;
- height: 25px;
- width: 80px;
- border-top-left-radius: 10px;
- border-top-right-radius: 10px;
- color: white;
- text-align: center;
- padding-top: 10px;
- font-weight: 700;
- font-size: 0.9rem;
+    background-color: #4A90E2;
+    position: fixed;
+    right: 30px;
+    bottom: 0;
+    height: 25px;
+    width: 80px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    color: white;
+    text-align: center;
+    padding-top: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
 }
