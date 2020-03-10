@@ -19,8 +19,8 @@ export default class UserStory extends Component {
     e.preventDefault();
 
     if (!this.state.edit) {
-      const max = 95995995959595;
-      const id = Math.floor(Math.random() * Math.floor(max));
+      const id = new Date().toISOString();
+
       const {
         project,
         activity,
@@ -32,7 +32,7 @@ export default class UserStory extends Component {
       this.setState({
         reportedTime: [
           ...this.state.reportedTime,
-          [id, project, activity, dateFrom, dateTo, chargeable, description]
+          { id, project, activity, dateFrom, dateTo, chargeable, description }
         ],
         id: "",
         project: "",
@@ -42,9 +42,50 @@ export default class UserStory extends Component {
         chargeable: null,
         description: ""
       });
-
       e.target.reset();
+
     } else {
+      const findItem = this.state.reportedTime.filter(
+        v => v.id !== this.state.id
+      );
+
+      this.state.reportedTime.find(element => {
+        if (element !== this.state.id) {
+          const id = this.state.id;
+
+          const {
+            project,
+            activity,
+            dateFrom,
+            dateTo,
+            chargeable,
+            description
+          } = this.state;
+
+          this.setState({
+            reportedTime: [
+              ...findItem,
+              {
+                id,
+                project,
+                activity,
+                dateFrom,
+                dateTo,
+                chargeable,
+                description
+              }
+            ],
+            id: "",
+            project: "",
+            activity: "",
+            dateFrom: "",
+            dateTo: "",
+            chargeable: null,
+            description: ""
+          });
+          e.target.reset();
+        }
+      });
     }
   };
 
@@ -87,15 +128,16 @@ export default class UserStory extends Component {
   askAboutDeletingTime = e => {
     this.setState({
       delete: true,
-      deleteId: e[0]
+      deleteId: e.id
     });
   };
+
   deleteHandler = e => {
     const id = this.state.deleteId;
     this.setState({
       delete: false,
       reportedTime: this.state.reportedTime.filter(function(bookning) {
-        return bookning[0] !== id;
+        return bookning.id !== id;
       })
     });
   };
@@ -112,56 +154,57 @@ export default class UserStory extends Component {
 
     const { reportedTime } = this.state;
 
+    const bookingSorted = this.state.reportedTime.sort(function compare(a, b) {
+      var dateA = new Date(a.id);
+      var dateB = new Date(b.id);
+      return dateA - dateB;
+    });
+
     const bookning =
       this.state.reportedTime.length > 0 ? (
-        reportedTime.map(userBoking => {
+        bookingSorted.map(userBoking => {
           return (
-            <>
-              <tr key={userBoking.id}>
-                <td>{userBoking[1]}</td>
-                <td>{userBoking[2]}</td>
-                <td>{userBoking[3]}</td>
-                <td>{userBoking[4]}</td>
-                <td>{userBoking[6]}</td>
-
-                <td>
-                  <button
-                    onClick={() => {
-                      this.setState({
-                        id: userBoking[0],
-                        project: userBoking[1],
-                        activity: userBoking[2],
-                        dateFrom: userBoking[3],
-                        dateTo: userBoking[4],
-                        chargeable: userBoking[5],
-                        description: userBoking[6],
-                        edit: true,
-                        reportedTime: [...reportedTime]
-                      });
-                    }}
-                  >
-                    Redigera
-                  </button>
-                </td>
-                <td>
-                  <button
-                    onClick={() => {
-                      this.askAboutDeletingTime(userBoking);
-                    }}
-                  >
-                    Radera
-                  </button>
-                </td>
-              </tr>
-            </>
+            <tr key={userBoking.id}>
+              <td>{userBoking.project}</td>
+              <td>{userBoking.activity}</td>
+              <td>{userBoking.dateFrom}</td>
+              <td>{userBoking.dateTo}</td>
+              <td>{userBoking.description}</td>
+              <td>
+                <button
+                  onClick={() => {
+                    this.setState({
+                      id: userBoking.id,
+                      project: userBoking.project,
+                      activity: userBoking.activity,
+                      dateFrom: userBoking.dateFrom,
+                      dateTo: userBoking.dateTo,
+                      chargeable: userBoking.chargeable,
+                      description: userBoking.description,
+                      edit: true,
+                      reportedTime: [...reportedTime]
+                    });
+                  }}
+                >
+                  Redigera
+                </button>
+              </td>
+              <td>
+                <button
+                  onClick={() => {
+                    this.askAboutDeletingTime(userBoking);
+                  }}
+                >
+                  Radera
+                </button>
+              </td>
+            </tr>
           );
         })
-      ) : (
-        <div> Det finns inga bokningar :) </div>
-      );
+      ) : (<tr><td>Det finns inga bokningar</td></tr>);
 
     return (
-      <div>
+      <>
         <style
           dangerouslySetInnerHTML={{
             __html:
@@ -307,9 +350,10 @@ export default class UserStory extends Component {
               <td colSpan={7}>Summa total tid: 8:00</td>
             </tr>
           </tfoot>
+
           <tbody>{bookning}</tbody>
         </table>
-      </div>
+      </>
     );
   }
 }
