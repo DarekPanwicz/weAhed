@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Uppgift nr 2, html</title>
+    <title>Uppgift nr 2, Html</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700&display=swap" rel="stylesheet">
@@ -15,20 +15,39 @@
     <div class="indexHtml">
 
         <header>
-            <div class="profileMenu"><span class="triangle"></span> Harriet Henry <span class="img"> <img src="./profile.jpg"> </span></div>
+            <div class="profileMenu"><span class="triangle"></span> Harriet Henry <span class="img"> <img
+                        src="./profile.jpg"> </span></div>
             <div class="wrap header">
                 <img src="./logo.png" alt="logotype">
             </div>
         </header>
 
         <nav>
-            <div class="wrap nav">
+            <div id="nav" class="wrap nav">
                 <ul>
-                    <li class="active"><img class="icons" src="./icons/clock.svg">Tidrapportering <div class="dot"></div></li>
-                    <li><img class="icons" src="./icons/time-left.svg">Historik</li>
-                    <li><img class="icons" src="./icons/project.svg">Projektet</li>
-                    <li><img class="icons" src="./icons/menu.svg">Aktiviteter</li>
-                    <li><img class="icons" src="./icons/user.svg">Personal</li>
+                    <a href="#">
+                        <li class="navItem active">
+                            <img class="icons" src="./icons/clock.svg">Tidrapportering <div class="dot"></div>
+                        </li>
+                    </a>
+                    <a href="#">
+                        <li class="navItem">
+                            <img class="icons" src="./icons/time-left.svg">Historik</li>
+                    </a>
+                    <a href="#">
+                        <li class="navItem">
+
+                            <img class="icons" src="./icons/project.svg">Projektet </li>
+                    </a>
+                    <a href="#">
+                        <li class="navItem">
+
+                            <img class="icons" src="./icons/menu.svg">Aktiviteter
+                            <a href="#">
+                        <li class="navItem">
+
+                            <img class="icons" src="./icons/user.svg">Persona </li>
+                    </a>
                 </ul>
             </div>
         </nav>
@@ -56,6 +75,22 @@
 
         </section>
     </div>
+    <script>
+        // Get the container element
+        var navContainer = document.getElementById("nav");
+
+        // Get all buttons with class="btn" inside the container
+        var navItem = navContainer.getElementsByClassName("navItem");
+
+        // Loop through the buttons and add the active class to the current/clicked button
+        for (var i = 0; i < navItem.length; i++) {
+            navItem[i].addEventListener("click", function () {
+                var current = document.getElementsByClassName("active");
+                current[0].className = current[0].className.replace(" active", "");
+                this.className += " active";
+            });
+        }
+    </script>
 
 </body>
 
