@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Form from "./UserForm";
+import ReportedTime from "./ReportedTime";
 
 export default class UserStory extends Component {
   state = {
@@ -9,7 +11,7 @@ export default class UserStory extends Component {
     dateTo: "",
     chargeable: null,
     edit: false,
-    delete: false,
+    deleteItem: false,
     deleteId: "",
     description: "",
     reportedTime: []
@@ -19,16 +21,10 @@ export default class UserStory extends Component {
     e.preventDefault();
 
     if (!this.state.edit) {
-      const id = new Date().toISOString();
 
-      const {
-        project,
-        activity,
-        dateFrom,
-        dateTo,
-        chargeable,
-        description
-      } = this.state;
+      const id = new Date().toISOString();
+      const {project, activity, dateFrom, dateTo, chargeable, description} = this.state;
+
       this.setState({
         reportedTime: [
           ...this.state.reportedTime,
@@ -43,7 +39,6 @@ export default class UserStory extends Component {
         description: ""
       });
       e.target.reset();
-
     } else {
       const findItem = this.state.reportedTime.filter(
         v => v.id !== this.state.id
@@ -53,27 +48,12 @@ export default class UserStory extends Component {
         if (element !== this.state.id) {
           const id = this.state.id;
 
-          const {
-            project,
-            activity,
-            dateFrom,
-            dateTo,
-            chargeable,
-            description
-          } = this.state;
+          const {project, activity, dateFrom, dateTo, chargeable, description} = this.state;
 
           this.setState({
             reportedTime: [
               ...findItem,
-              {
-                id,
-                project,
-                activity,
-                dateFrom,
-                dateTo,
-                chargeable,
-                description
-              }
+              {id, project, activity, dateFrom, dateTo, chargeable, description}
             ],
             id: "",
             project: "",
@@ -87,6 +67,21 @@ export default class UserStory extends Component {
         }
       });
     }
+  };
+
+  changingContent = e => {
+    const userBooking = e;
+    this.setState({
+      id: userBooking.id,
+      project: userBooking.project,
+      activity: userBooking.activity,
+      dateFrom: userBooking.dateFrom,
+      dateTo: userBooking.dateTo,
+      chargeable: userBooking.chargeable,
+      description: userBooking.description,
+      edit: true,
+      reportedTime: [...this.state.reportedTime]
+    });
   };
 
   projectHandler = e => {
@@ -127,81 +122,32 @@ export default class UserStory extends Component {
 
   askAboutDeletingTime = e => {
     this.setState({
-      delete: true,
+      deleteItem: true,
       deleteId: e.id
+    });
+  };
+
+  doNotDelete = e => {
+    this.setState({
+      deleteItem: false
     });
   };
 
   deleteHandler = e => {
     const id = this.state.deleteId;
     this.setState({
-      delete: false,
-      reportedTime: this.state.reportedTime.filter(function(bookning) {
+      deleteItem: false,
+      reportedTime: this.state.reportedTime.filter(function (bookning) {
         return bookning.id !== id;
       })
     });
   };
 
   render() {
-    const styleBtn = {
-      height: "40px",
-      width: "100px",
-      color: "white",
-      fontSize: "25px",
-      backgroundColor: "black",
-      margin: "0 10px"
-    };
+    const {id, project, activity, dateFrom, dateTo, chargeable, edit, deleteItem, deleteId, description, reportedTime
+    } = this.state;
 
-    const { reportedTime } = this.state;
-
-    const bookingSorted = this.state.reportedTime.sort(function compare(a, b) {
-      var dateA = new Date(a.id);
-      var dateB = new Date(b.id);
-      return dateA - dateB;
-    });
-
-    const bookning =
-      this.state.reportedTime.length > 0 ? (
-        bookingSorted.map(userBoking => {
-          return (
-            <tr key={userBoking.id}>
-              <td>{userBoking.project}</td>
-              <td>{userBoking.activity}</td>
-              <td>{userBoking.dateFrom}</td>
-              <td>{userBoking.dateTo}</td>
-              <td>{userBoking.description}</td>
-              <td>
-                <button
-                  onClick={() => {
-                    this.setState({
-                      id: userBoking.id,
-                      project: userBoking.project,
-                      activity: userBoking.activity,
-                      dateFrom: userBoking.dateFrom,
-                      dateTo: userBoking.dateTo,
-                      chargeable: userBoking.chargeable,
-                      description: userBoking.description,
-                      edit: true,
-                      reportedTime: [...reportedTime]
-                    });
-                  }}
-                >
-                  Redigera
-                </button>
-              </td>
-              <td>
-                <button
-                  onClick={() => {
-                    this.askAboutDeletingTime(userBoking);
-                  }}
-                >
-                  Radera
-                </button>
-              </td>
-            </tr>
-          );
-        })
-      ) : (<tr><td>Det finns inga bokningar</td></tr>);
+    const values = {id, project, activity, dateFrom, dateTo, chargeable, edit, deleteItem, deleteId, description, reportedTime};
 
     return (
       <>
@@ -225,134 +171,25 @@ export default class UserStory extends Component {
           elementum habitasse risus etiam, in! Hac ut? Magnis, penatibus enim
           odio enim hac!
         </p>
-        <form className="report" onSubmit={this.submitHandler}>
-          <div className="col-left">
-            <label>
-              Projekt
-              <select
-                name="project"
-                value={this.state.project}
-                onChange={this.projectHandler}
-              >
-                <option value>Var god välj ett projekt...</option>
-                <option name="project 1" value="project1">
-                  Projekt 1
-                </option>
-                <option name="project 2" value="project2">
-                  Projekt 2
-                </option>
-                <option name="project 3" value="project3">
-                  Projekt 3
-                </option>
-              </select>
-            </label>
-            <label>
-              Aktivitet
-              <select
-                name="activity"
-                value={this.state.activity}
-                onChange={this.activityHandler}
-              >
-                <option value>Var god välj en aktivitet...</option>
-                <option name="activity 1" value="activity1">
-                  Aktivitet 1
-                </option>
-                <option name="activity 2" value="activity2">
-                  Aktivitet 2
-                </option>
-                <option name="activity 3" value="activity3">
-                  Aktivitet 3
-                </option>
-              </select>
-            </label>
-            <div className="pair">
-              <label className="pair-left">
-                Från
-                <input
-                  type="text"
-                  name="from"
-                  value={this.state.dateFrom}
-                  onChange={this.dateFromHandler}
-                />
-              </label>
-              <label className="pair-right">
-                Till
-                <input
-                  type="text"
-                  name="to"
-                  value={this.state.dateTo}
-                  onChange={this.dateToHandler}
-                />
-              </label>
-            </div>
-            <label className="checkbox">
-              <span>Debiterbar</span>
-              <input
-                type="checkbox"
-                name="billable"
-                onChange={this.chargeableHandler}
-              />
-            </label>
-          </div>
-          <div className="col-right">
-            <label>
-              Anteckning
-              <textarea
-                name="note"
-                cols={30}
-                rows={10}
-                defaultValue={this.state.description}
-                onChange={this.descriptionHandler}
-              />
-            </label>
-            <button type="submit">Spara</button>
-          </div>
-        </form>
 
-        {this.state.delete ? (
-          <div>
-            <p style={{ fontSize: "30px", color: "red" }}>
-              Vill du verkligen ta bort tid ?
-            </p>
-            <button onClick={this.deleteHandler} style={styleBtn}>
-              {" "}
-              Ja{" "}
-            </button>
-            <button
-              onClick={() => {
-                this.setState({
-                  delete: false
-                });
-              }}
-              style={styleBtn}
-            >
-              {" "}
-              Nej{" "}
-            </button>
-          </div>
-        ) : null}
+        <Form
+          values={values}
+          submitHandler={this.submitHandler}
+          projectHandler={this.projectHandler}
+          activityHandler={this.activityHandler}
+          dateFromHandler={this.dateFromHandler}
+          dateToHandler={this.dateToHandler}
+          chargeableHandler={this.chargeableHandler}
+          descriptionHandler={this.descriptionHandler}
+        />
 
-        <table>
-          <caption>Rapporterad tid</caption>
-
-          <thead>
-            <tr>
-              <th>Projekt</th>
-              <th>Aktivitet</th>
-              <th>Från</th>
-              <th>Till</th>
-              <th>Anteckning</th>
-              <th colSpan={2}>Åtgärd</th>
-            </tr>
-          </thead>
-          <tfoot>
-            <tr>
-              <td colSpan={7}>Summa total tid: 8:00</td>
-            </tr>
-          </tfoot>
-
-          <tbody>{bookning}</tbody>
-        </table>
+        <ReportedTime
+          values={values}
+          deleteHandler={this.deleteHandler}
+          askAboutDeletingTime={this.askAboutDeletingTime}
+          doNotDelete={this.doNotDelete}
+          changingContent={this.changingContent}
+        />
       </>
     );
   }
